@@ -4,10 +4,12 @@
 from datetime import datetime
 from enum import Enum
 
+# 在TransactionType枚举中添加贷款还款类型
 class TransactionType(Enum):
     DEPOSIT = "存款"
     WITHDRAWAL = "取款"
     TRANSFER = "转账"
+    LOAN_PAYMENT = "贷款还款"
 
 class Transaction:
     def __init__(self, transaction_id, account_number, transaction_type, amount, 

@@ -119,3 +119,30 @@ class TransactionManager:
         except ValueError:
             print("请输入有效数字")
             return None
+            
+        # 添加还款方法
+    def repay_loan(self, user):
+        print("\n还款操作")
+        account = self._select_account(user, "请选择贷款账户")
+        if not account or not isinstance(account, LoanAccount):
+            print("请选择有效的贷款账户")
+            return
+            
+        try:
+            amount = float(input("请输入还款金额: "))
+            remaining_balance = account.make_payment(amount)
+            
+            # 记录交易
+            transaction = Transaction(
+                self.db_handler.get_next_transaction_id(),
+                account.account_number,
+                TransactionType.LOAN_PAYMENT,
+                amount,
+                description=f"贷款还款，剩余欠款: {remaining_balance:.2f}"
+            )
+            self.db_handler.save_transaction(transaction)
+            self.db_handler.update_account(account)
+            
+            print(f"还款成功! 剩余欠款: {remaining_balance:.2f}")
+        except ValueError as e:
+            print(f"错误: {e}")

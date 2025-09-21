@@ -40,22 +40,29 @@ class AccountManager:
     def __init__(self, db_handler):
         self.db_handler = db_handler
         
-    def create_account(self, user):
-        print("\n创建账户")
-        account_type = input("请输入账户类型 (1: 储蓄账户, 2: 支票账户): ")
+    # 在create_account方法中添加贷款账户选项
+def create_account(self, user):
+    print("\n创建账户")
+    account_type = input("请输入账户类型 (1: 储蓄账户, 2: 支票账户, 3: 贷款账户): ")
+    
+    if account_type == '1':
+        from accounts.savings_account import SavingsAccount
+        account = SavingsAccount.generate_account_number(), user.user_id, 0.0
+    elif account_type == '2':
+        from accounts.checking_account import CheckingAccount
+        account = CheckingAccount.generate_account_number(), user.user_id, 0.0
+    elif account_type == '3':
+        from accounts.loan_account import LoanAccount
+        loan_amount = float(input("请输入贷款金额: "))
+        term_months = int(input("请输入贷款期限(月): "))
+        account = LoanAccount(LoanAccount.generate_account_number(), user.user_id, 
+                             loan_amount, term_months=term_months)
+    else:
+        print("无效的账户类型")
+        return
         
-        if account_type == '1':
-            from accounts.savings_account import SavingsAccount
-            account = SavingsAccount.generate_account_number(), user.user_id, 0.0
-        elif account_type == '2':
-            from accounts.checking_account import CheckingAccount
-            account = CheckingAccount.generate_account_number(), user.user_id, 0.0
-        else:
-            print("无效的账户类型")
-            return
-            
-        self.db_handler.save_account(account)
-        print(f"账户创建成功! 账户号: {account.account_number}")
+    self.db_handler.save_account(account)
+    print(f"账户创建成功! 账户号: {account.account_number}")
         
     def view_accounts(self, user):
         accounts = self.db_handler.get_user_accounts(user.user_id)
